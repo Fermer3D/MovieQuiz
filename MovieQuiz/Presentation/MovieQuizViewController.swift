@@ -2,45 +2,6 @@ import UIKit
 
 final class MovieQuizViewController: UIViewController {
     // MARK: - Lifecycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let questionStep = QuizStepViewModel( // 1
-            image: UIImage(named: model.image) ?? UIImage(), // 2
-            question: model.text, // 3
-            questionNumber: "\(currentQuestionIndex + 1)/\(questions.count)") // 4
-        return questionStep
-    }
-    
-    private func show(quiz step: QuizStepViewModel) {
-        imageView.image = step.image
-        textLabel.text = step.question
-        counterLabel.text = step.questionNumber
-    }
-    
-    @IBOutlet private var imageView: UIImageView!
-    @IBOutlet private var textLabel: UILabel!
-    @IBOutlet private var counterLabel: UILabel!
-    
-    struct QuizQuestion {
-        let image: String
-        let text: String
-        let correctAnswer: Bool
-    }
-    
-    struct QuizStepViewModel {
-        let image: UIImage
-        let question: String
-        let questionNumber: String
-    }
-    
-    struct QuizResultsViewModel {
-        let title: String
-        let text: String
-        let buttonText: String
-    }
     
     private var correctAnswers = 0
     
@@ -88,6 +49,52 @@ final class MovieQuizViewController: UIViewController {
             text: "Рейтинг этого фильма больше чем 6?",
             correctAnswer: false)
     ]
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        if !questions.isEmpty {
+            let firstQuestion = questions[currentQuestionIndex]
+            let viewModel = convert(model: firstQuestion)
+            show(quiz: viewModel)
+        }
+    }
+    
+    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+        let questionStep = QuizStepViewModel( // 1
+            image: UIImage(named: model.image) ?? UIImage(), // 2
+            question: model.text, // 3
+            questionNumber: "\(currentQuestionIndex + 1)/\(questions.count)") // 4
+        return questionStep
+    }
+    
+    private func show(quiz step: QuizStepViewModel) {
+        imageView.image = step.image
+        textLabel.text = step.question
+        counterLabel.text = step.questionNumber
+    }
+    
+    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private var textLabel: UILabel!
+    @IBOutlet private var counterLabel: UILabel!
+    
+    struct QuizQuestion {
+        let image: String
+        let text: String
+        let correctAnswer: Bool
+    }
+    
+    struct QuizStepViewModel {
+        let image: UIImage
+        let question: String
+        let questionNumber: String
+    }
+    
+    struct QuizResultsViewModel {
+        let title: String
+        let text: String
+        let buttonText: String
+    }
+    
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         let currentQuestion = questions[currentQuestionIndex]
@@ -100,7 +107,7 @@ final class MovieQuizViewController: UIViewController {
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         let currentQuestion = questions[currentQuestionIndex]
-        let isCorrect = currentQuestion.correctAnswer
+        let isCorrect = !currentQuestion.correctAnswer
         showAnswerResult(isCorrect: isCorrect)
         if isCorrect {
             correctAnswers += 1
@@ -110,15 +117,37 @@ final class MovieQuizViewController: UIViewController {
     private func showAnswerResult(isCorrect: Bool){
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
-        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        
+        let colorName: String
+        
+        if isCorrect {
+            colorName = "YP Green (iOS)"
+        } else {
+            colorName = "YP Red (iOS)"
+        }
+        
+        if let customColor = UIColor(named: colorName) {
+            imageView.layer.borderColor = customColor.cgColor
+        } else {
+            
+            print("Не удалось найти цвет '\(colorName)' в Assets. Используется стандартный цвет.")
+            
+        }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.resetImageViewBorder()
             self.showNextQuestionOrResults()
         }
     }
     
+    func resetImageViewBorder() {
+        imageView.layer.borderColor = UIColor.clear.cgColor
+        imageView.layer.borderWidth = 0.0
+    }
+    
     
     private func showNextQuestionOrResults() {
+        resetImageViewBorder()
         if currentQuestionIndex == questions.count - 1 {
             let text = "Ваш результат: \(correctAnswers)/10" // 1
             let viewModel = QuizResultsViewModel( // 2
