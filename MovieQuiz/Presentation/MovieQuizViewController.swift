@@ -57,6 +57,8 @@ final class MovieQuizViewController: UIViewController {
             let viewModel = convert(model: firstQuestion)
             show(quiz: viewModel)
         }
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
     }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
