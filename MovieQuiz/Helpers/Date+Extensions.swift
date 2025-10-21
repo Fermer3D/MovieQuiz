@@ -1,8 +1,13 @@
 import Foundation
 
 extension Date {
-    var dateTimeString: String { DateFormatter.defaultDateTime.string(from: self) }
-}
+    func dateTimeString() -> String {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            formatter.timeStyle = .short
+            return formatter.string(from: self)
+        }
+    }
 
 private extension DateFormatter {
     static let defaultDateTime: DateFormatter = {
