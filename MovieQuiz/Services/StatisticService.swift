@@ -10,14 +10,13 @@ import Foundation
 final class StatisticService: StatisticServiceProtocol {
     
     private let gamesCountKey = "gamesCount"
-        private let bestGameKey = "bestGameResult"
+        private let bestGameCorrectKey = "bestGameCorrect"
+        private let bestGameTotalKey = "bestGameTotal"
+        private let bestGameDateKey = "bestGameDate"
         private let correctAnswersKey = "correctAnswers"
         private let totalQuestionsKey = "totalQuestions"
         
-
         private let userDefaults = UserDefaults.standard
-        private let encoder: JSONEncoder = JSONEncoder()
-        private let decoder: JSONDecoder = JSONDecoder()
 
         var gamesCount: Int {
             get {
@@ -48,18 +47,15 @@ final class StatisticService: StatisticServiceProtocol {
 
         var bestGame: GameResult {
             get {
-                guard let data = userDefaults.data(forKey: bestGameKey),
-                      let result = try? decoder.decode(GameResult.self, from: data) else {
-                    return GameResult(correct: 0, total: 0, date: Date())
-                }
-                return result
+                let correct = userDefaults.integer(forKey: bestGameCorrectKey)
+                let total = userDefaults.integer(forKey: bestGameTotalKey)
+                let date = userDefaults.object(forKey: bestGameDateKey) as? Date ?? Date()
+                return GameResult(correct: correct, total: total, date: date)
             }
             set {
-                guard let data = try? encoder.encode(newValue) else {
-                    print("Не удалось закодировать bestGame")
-                    return
-                }
-                userDefaults.set(data, forKey: bestGameKey)
+                userDefaults.set(newValue.correct, forKey: bestGameCorrectKey)
+                userDefaults.set(newValue.total, forKey: bestGameTotalKey)
+                userDefaults.set(newValue.date, forKey: bestGameDateKey)
             }
         }
 
@@ -86,7 +82,7 @@ final class StatisticService: StatisticServiceProtocol {
             if newResult.correct > bestGame.correct {
                 bestGame = newResult
             } else if newResult.correct == bestGame.correct && newResult.total < bestGame.total {
-                 bestGame = newResult
+                bestGame = newResult
             }
         }
     }
