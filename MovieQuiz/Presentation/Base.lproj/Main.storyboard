@@ -106,6 +106,9 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="8tu-SS-guC">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black (iOS)"/>
@@ -114,9 +117,12 @@
                             <constraint firstItem="AG2-Rk-WOc" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="PjV-8Q-MjW"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="AG2-Rk-WOc" secondAttribute="trailing" constant="20" id="ROh-8p-DXU"/>
                             <constraint firstItem="AG2-Rk-WOc" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="Rej-vF-Tmc"/>
+                            <constraint firstItem="8tu-SS-guC" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="fkX-5J-NEP"/>
+                            <constraint firstItem="8tu-SS-guC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="xxl-Qm-j2j"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="8tu-SS-guC" id="Ze0-Q9-5ul"/>
                         <outlet property="counterLabel" destination="KGL-9d-x3E" id="O1t-z5-OzF"/>
                         <outlet property="imageView" destination="JFk-d7-315" id="x4m-MH-3AW"/>
                         <outlet property="textLabel" destination="RhH-wQ-gXa" id="Gr7-fZ-nbm"/>
